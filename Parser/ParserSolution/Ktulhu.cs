@@ -264,9 +264,16 @@ namespace ParserNamespace
         public override string ToString()
         {
             string res = name;
-            if (argsList != null)
+            bool first = true;
+            foreach (ArgumentsFact item in argsList)
             {
-                res += argsList.ToString();
+                if (item != null)
+                {
+                    if (!first)
+                        res += ", ";
+                    first = false;
+                    res += item.ToString();
+                }
             }
             return res;
         }
@@ -671,7 +678,7 @@ namespace ParserNamespace
     }
 
 
-    class FuncCall : Expression
+    /*class FuncCall : Expression
     {
         public Expression func;
         public ArgumentsFact argsList;
@@ -722,7 +729,7 @@ namespace ParserNamespace
             return Call(context);
         }
 
-    }
+    }*/
 
     class FuncValue : Value
     {
@@ -764,34 +771,49 @@ namespace ParserNamespace
 
         public override string Print()
         {
-            string argsList = "";
+            string argsStr = "";
             bool first = true;
             foreach (string item in arguments)
             {
                 if (!first)
-                    argsList += ", ";
+                    argsStr += ", ";
                 first = false;
-                argsList += item;
+                argsStr += item;
             }
 
             string res = body.ToString();
 
             string argsCall = "";
-            if (argsList != null)
+            first = true;
+            foreach (ArgumentsFact item in argsList)
             {
-                argsCall += argsList.ToString();
+                if (item != null)
+                {
+                    if (!first)
+                        argsCall += ", ";
+                    first = false;
+                    argsCall += item.ToString();
+                }
             }
-            return string.Format("function({0}) {{\n{1}}}{2}", argsList, res, argsCall);
+            return string.Format("function({0}) {{\n{1}}}{2}", argsStr, res, argsCall);
         }
 
         public override Value GetValue(Context context)
         {
-            if (argsList == null)
+            if (argsList.Count == 0)
                 return this;
             else
             {
                 var tempContext = new Context(context);
                 Execute(tempContext);
+                while (argsList.Count > 0)
+                {
+                    var tempFunc = tempContext.returnValue;
+                    tempFunc.argsList = argsList;
+                    tempContext = new Context(tempContext);
+                    (tempFunc as FuncValue).Execute(tempContext);
+                    //tempContext.returnValue = tempFunc.GetValue(tempContext);
+                }
                 return tempContext.returnValue;
             }
         }
@@ -804,16 +826,20 @@ namespace ParserNamespace
 
         public bool Execute(Context context)
         {
+            ArgumentsFact currentArgsList = null;
+            if (argsList.Count>0)
+                currentArgsList = argsList.Dequeue();
             foreach (string item in arguments)
             {
                 context.AddVar(item);
             }
             if (body.IsPrint())
             {
-                context.GenerateNVars(argsList.args.Count);
+                if (currentArgsList != null)
+                    context.GenerateNVars(currentArgsList.args.Count);
             }
-            if (argsList != null)
-                context.SetVars(argsList);
+            if (currentArgsList != null)
+                context.SetVars(currentArgsList);
             body.Execute(context);
             return true;
         }

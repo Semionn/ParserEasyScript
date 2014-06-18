@@ -23,7 +23,7 @@ namespace ParserNamespace
 
     abstract class Value : ExprNode
     {
-        public ArgumentsFact argsList;                 //suffix
+        public Queue<ArgumentsFact> argsList = new Queue<ArgumentsFact>();                 //suffix
 
         public virtual double DoubleValue()
         {
@@ -65,7 +65,14 @@ namespace ParserNamespace
             }
             if (res != null)
             {
-                res.argsList = ArgumentsFact.TryParse(ref s);
+                while (true)
+                {
+                    var tempArgs = ArgumentsFact.TryParse(ref s);
+                    if (tempArgs != null)
+                        res.argsList.Enqueue(tempArgs);
+                    else
+                        break;
+                }
                 //if (res.args != null && res.nodeType != ExprNodeType.Function)
                 //    return null;
             }

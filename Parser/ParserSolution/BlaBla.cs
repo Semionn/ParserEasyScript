@@ -44,13 +44,16 @@ namespace ParserNamespace
 GG(2+t);
 ");*/
             if (false) T(@"
- t = 1;
-f = function(a){
- t = 2;
- print(t*3+a*t*2-1);
- return a+1;
- };
- print(1,2,3);
+ add=1;
+number = function(a){
+	return function(method){
+        if (method == 1) { return 2; }
+        return a;
+	};
+};
+
+print(number(5)(1));
+print(number(5)(0));
 "); 
            // T(@"a(b());");
 
