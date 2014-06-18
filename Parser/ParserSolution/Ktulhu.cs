@@ -930,7 +930,7 @@ namespace ParserNamespace
         public override string ToString()
         {
 
-            return "return;\n";
+            return string.Format("return {0};\n", expr);
         }
 
     }

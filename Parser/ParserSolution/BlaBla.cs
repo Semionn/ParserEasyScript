@@ -54,14 +54,24 @@ f = function(a){
 "); 
            // T(@"a(b());");
 
-            if (false) T(@"
+            if (true) T(@"
+add=0;
+sub=1;
+value=2;
+number = function(a){
+	return function(method){
+		if (method == add){ return function(b){ return number(a + b); }; }
+		if (method == sub){ return function(b){ return number(a - b); }; }
+		if (method == value){ return a; }
+		while (true) {}		
+	};
+};
 
-a = 1; 
-pr = function(b){ print(a + b); }; 
-pr(2);
+print(number(1)(add)(2)(sub)(5)(value));
+print(number(1)(add)(2)(value));
 ");
 
-            if (true) T(@"
+            if (false) T(@"
 sum = function(a, b){ return a + b; };
 print(sum(1, 2));
 make_null = function(){};
