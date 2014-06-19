@@ -251,7 +251,7 @@ namespace ParserNamespace
             if (temp != null)
             {
                 value = temp.value;
-                value.argsList = argsList;
+                value.argsList = new Queue<ArgumentsFact>(argsList);
             }
             return value.GetValue(context);
         }

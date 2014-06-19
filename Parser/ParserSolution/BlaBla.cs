@@ -73,8 +73,9 @@ number = function(a){
 print(number(1)(add)(2)(sub)(5)(value));
 print(number(1)(add)(2)(value));
 ");
+         
 
-            if (false) T(@"
+            if (true) T(@"
 sum = function(a, b){ return a + b; };
 print(sum(1, 2));
 make_null = function(){};

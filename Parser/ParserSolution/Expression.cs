@@ -8,9 +8,9 @@ namespace ParserNamespace
     class Expression
     {
         ExprNode root;
-        public bool strict = true;
-        public int SyntaxErrorPos = -1;
-        int k = 0;
+        private bool strict = true;
+        private int SyntaxErrorPos = -1;
+        private int k = 0;
         //Context context;
 
         public Expression(ref Source s)
